@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import random
 
+from itatools import itaw
 
 class DummyInstrument:
     def __init__(self):
@@ -33,3 +34,8 @@ class DummyInstrument:
         d = {'x': x, 'y': y, 'xlabel': 'Time (s)', 'ylabel': 'Voltage (V)'}
 
         return d
+
+
+if __name__ == "__main__":
+    di = DummyInstrument()
+    it = itaw(get_trace=di.get_trace)

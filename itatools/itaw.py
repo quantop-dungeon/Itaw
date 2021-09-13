@@ -17,9 +17,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
-from dummy_instrument import DummyInstrument
-
-from itawui import Ui_Itaw
+from .itawui import Ui_Itaw
 
 UNSAVED_ITEM_COLOR = (130, 130, 130)  # rgb
 SAVED_ITEM_COLOR = (0, 0, 0)  # rgb
@@ -82,7 +80,8 @@ class ItawWindow(QMainWindow, Ui_Itaw):
     def _create_figure(self):
         """Creates a matplotlib figure in the window and set its style."""
 
-        plt.style.use('itaw.mplstyle')
+        style_file = os.path.join(os.path.dirname(__file__), 'itaw.mplstyle')
+        plt.style.use(style_file)
 
         self.canvas = FigureCanvas(Figure(figsize=(10, 6)))
         self.axes = self.canvas.figure.subplots()
@@ -483,8 +482,3 @@ def _draw_trace_icon(color: Union[str, tuple], border=True) -> QtGui.QPixmap:
     painter.drawEllipse(int(r/2), int(r/2), r, r)
 
     return pixmap
-
-
-if __name__ == "__main__":
-    di = DummyInstrument()
-    it = itaw(get_trace=di.get_trace)

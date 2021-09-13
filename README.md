@@ -12,14 +12,18 @@ def generate_trace(dx=0):
     yarr = [(x+dx)**2 for x in xarr]
     return {'x': xarr, 'y': yarr} 
 ```
-One can create a GUI for interactive acquisition and handling of data from `generate_trace` as:
+Itaw allows to interactively acquire and handle data from `generate_trace`. A new widget can be created as:
 
 ```python
 from itatools import itaw
 
 win = itaw(generate_trace)
 ```
-The widget has a way to supply arguments to the trace acquisition function (which must be supplied if the function does not define default values).
+It looks like this:
+
+![Itaw](doc/Itaw.jpg "Title")
+
+Note that the widget has a way to supply arguments to the trace acquisition function (which must be supplied if the function does not define default values).
 
 Below is another example in which a method of a spectrum analyzer control class is used to acquire traces:
 
