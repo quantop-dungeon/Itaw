@@ -1,0 +1,25 @@
+font.family			:	serif
+font.sans-serif		:	Times
+
+font.size			:	12 
+
+axes.linewidth 		:	0.5
+axes.labelsize		:	12
+lines.linewidth		:	1
+
+xtick.direction		:	in
+xtick.top			:	True
+xtick.major.width	:	0.5
+xtick.minor.width	:	0.5
+
+ytick.direction		:	in
+ytick.right			:	True
+ytick.major.width	:	0.5
+ytick.minor.width	:	0.5
+
+grid.color			:	(0.85, 0.85, 0.85) # Mathematica LightGray
+#grid.linestyle		:	-
+grid.linewidth		:	0.5
+
+legend.fontsize		: 	10
+

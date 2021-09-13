@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Sergey Fedorov</author>
+ <class>Itaw</class>
+ <widget class="QMainWindow" name="Itaw">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1450</width>
+    <height>851</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Itaw</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+	font: 10pt &quot;Calibri Light&quot;;
+	background-color: white;
+}
+QComboBox {
+	border-style: solid;
+    border-width: 1px;
+    border-color: rgb(0, 0, 0);
+}
+QToolButton:checked {
+	border-style: solid;
+    border-width: 1px;
+    border-color: white;
+	background-color: rgb(204, 232, 255);
+}
+QComboBox QAbstractItemView {
+    background-color: rgb(240, 240, 240);
+}
+QToolTip {
+	font: 10pt &quot;Calibri Light&quot;;
+}
+QMenu::item {
+    /* sets background of menu item. set this to something non-transparent
+        if you want menu color and menu item color to be different */
+    background-color: transparent;
+}
+QMenu::item:selected { /* when user selects item using mouse or keyboard */
+    background-color: rgb(204, 232, 255);
+	color: black;
+}
+QPushButton { 
+	background-color: rgb(255, 255, 255);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 6px;
+    border-color: rgb(0, 0, 0);
+    min-width: 8em;
+    padding: 3px; 
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="0">
+     <widget class="QPushButton" name="openDirButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>176</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Open</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="6">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0">
+      <item>
+       <layout class="QVBoxLayout" name="mplVBox"/>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QPushButton" name="readTraceButton">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Read</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="argsLabel">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Args:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>argsLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="argsLineEdit">
+            <property name="minimumSize">
+             <size>
+              <width>140</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>300</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;e.g. &amp;quot;ch=1, mem=True&amp;quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string notr="true"/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QListWidget" name="traceListWidget">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;pre style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:19px; background-color:#ffffff;&quot;&gt;&lt;span style=&quot; font-family:'Consolas,Courier New,monospace'; font-size:14px; color:#000000;&quot;&gt;Ctrl+s - save selected trace&lt;/span&gt;&lt;/pre&gt;&lt;pre style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:19px; background-color:#ffffff;&quot;&gt;&lt;span style=&quot; font-family:'Consolas,Courier New,monospace'; font-size:14px; color:#000000;&quot;&gt;Ctrl+x - toggle visibility&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="dragEnabled">
+           <bool>false</bool>
+          </property>
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::DragDrop</enum>
+          </property>
+          <property name="defaultDropAction">
+           <enum>Qt::MoveAction</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>1. transmission td scan 2</string>
+           </property>
+           <property name="statusTip">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <activeoff>trace_not_disp_icon.png</activeoff>
+             <activeon>trace_disp_icon.png</activeon>
+            </iconset>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2. transmission td locked res</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <activeoff>trace_not_disp_icon.png</activeoff>
+             <activeon>trace_disp_icon.png</activeon>
+            </iconset>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>3. new trace</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <activeoff>trace_not_disp_icon.png</activeoff>
+             <activeon>trace_disp_icon.png</activeon>
+            </iconset>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="saveTraceButton">
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="2">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Directory:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="buddy">
+       <cstring>dirLineEdit</cstring>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="4">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>5</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="4">
+     <widget class="QLineEdit" name="dirLineEdit"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1450</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="actionsMenu">
+    <property name="title">
+     <string>Actions</string>
+    </property>
+    <addaction name="tightLayoutAction"/>
+    <addaction name="resetColorOrderAction"/>
+   </widget>
+   <addaction name="actionsMenu"/>
+  </widget>
+  <action name="tightLayoutAction">
+   <property name="text">
+    <string>Tight layout</string>
+   </property>
+  </action>
+  <action name="actionitem2">
+   <property name="text">
+    <string>item2</string>
+   </property>
+  </action>
+  <action name="resetColorOrderAction">
+   <property name="text">
+    <string>Reset color order</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
