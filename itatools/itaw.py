@@ -163,6 +163,64 @@ class ItaWidget(QMainWindow, Ui_Itaw):
 
         return full_name
 
+    def add_trace(self, tr, name: str = '') -> None:
+        """Adds a new item to the trace list widget and stores the trace 
+        in a dictionary under its user data.
+
+        Args:
+            tr: The trace to be stored.
+            name: The name of the trace.
+        """
+
+        # Creates a new list item.
+        item = QListWidgetItem(name)
+        item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
+                      | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsDragEnabled)
+        # Flags:
+        # ItemIsEnabled - enables user interaction
+        # ItemIsEditable - allows to edit the text
+        # ItemIsDragEnabled - allows to rearrange items by dragging them
+
+        qcolor = QtGui.QColor(*UNSAVED_ITEM_COLOR)
+        item.setForeground(qcolor)
+
+        # Plots the new data in the axes.
+        lines = self.axes.plot(tr['x'], tr['y'])
+
+        try:
+            self.axes.set_xlabel(tr['xlabel'])
+        except (TypeError, KeyError):
+            pass
+
+        try:
+            self.axes.set_ylabel(tr['ylabel'])
+        except (TypeError, KeyError):
+            pass
+
+        self.canvas.draw()
+        self.canvas.figure.tight_layout()
+
+        if lines:
+            line = lines[0]
+            line.set_label(name)
+            icon_color = line.get_color()
+        else:
+            line = None
+            icon_color = (255, 255, 255, 0)  # rgba transparent white
+
+        # Adds an icon to the trace that has the same color as the line.
+        item.setIcon(QtGui.QIcon(_draw_trace_icon(icon_color)))
+
+        # TODO (2021-09-12): remove icon_color ot implement a syncronization
+        # between the line color and and icon (e.g. for situations when the
+        # line color is changed from outside). Right now icon_color key is unused.
+        trace_data = {'trace': tr, 'line': line, 'icon_color': icon_color}
+        item.setData(QtCore.Qt.UserRole, trace_data)
+
+        # The item is added to the list only after we are done with editing it 
+        # to prevent useless firings of itemChanged signal by the list widget.
+        self.traceListWidget.addItem(item)
+
     # UI interaction functions
 
     def keyPressEvent(self, event: QtGui.QKeyEvent):
@@ -269,71 +327,30 @@ class ItaWidget(QMainWindow, Ui_Itaw):
                     qcolor = QtGui.QColor(*SAVED_ITEM_COLOR)
                     item.setForeground(qcolor)
                 except Exception as e:
-                    print(e)
+                    QMessageBox.warning(self, 'Exception', e)
                 # Errors are suppressed at this point, so that if something 
                 # goes wrong during saving the data (e.g. the directory is not
                 # accessible, or the file name contains an invalid character),
                 # the exception is displayed, but the app is not shut down which
-                # would result in loosing the trace data.
+                # would result in loosing data.
 
     def _on_get_trace(self):
         argstr = self.argsLineEdit.text()
 
-        # Get a new trace from the instrument using the list of arguments
-        tr = eval(f'self.get_trace({argstr})')
+        # Getting a new trace is hedged to prevent shutting down the GUI due to
+        # errors in supplied arguments.
+        try:
+            # Get a new trace from the instrument using the list of arguments.
+            tr = eval(f'self.get_trace({argstr})')
+        except Exception as e:
+            QMessageBox.warning(self, 'Exception', str(e))
+            return
 
-        # Generates a default trace name.
+        # Generates a name for the trace and adds the trace to the list.
         n = self.traceListWidget.count()
         trace_name = f'Trace {n+1}'
+        self.add_trace(tr, trace_name)
 
-        # Creates a list node to store the trace.
-        item = QListWidgetItem(trace_name)
-        item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
-                      | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsDragEnabled)
-        # Flags:
-        # ItemIsEnabled - enables user interaction
-        # ItemIsEditable - allows to edit the text
-        # ItemIsDragEnabled - allows to rearrange items by dragging them
-
-        qcolor = QtGui.QColor(*UNSAVED_ITEM_COLOR)
-        item.setForeground(qcolor)
-
-        # Plots the new data in the axes.
-        lines = self.axes.plot(tr['x'], tr['y'])
-
-        try:
-            self.axes.set_xlabel(tr['xlabel'])
-        except (TypeError, KeyError):
-            pass
-
-        try:
-            self.axes.set_ylabel(tr['ylabel'])
-        except (TypeError, KeyError):
-            pass
-
-        self.canvas.draw()
-        self.canvas.figure.tight_layout()
-
-        if lines:
-            line = lines[0]
-            line.set_label(trace_name)
-            icon_color = line.get_color()
-        else:
-            line = None
-            icon_color = (255, 255, 255, 0)  # rgba transparent white
-
-        # Adds an icon to the trace that has the same color as the line.
-        item.setIcon(QtGui.QIcon(_draw_trace_icon(icon_color)))
-
-        # TODO (2021-09-12): remove icon_color ot implement a syncronization
-        # between the line color and and icon (e.g. for situations when the
-        # line color is changed from outside). Right now icon_color key is unused.
-        trace_data = {'trace': tr, 'line': line, 'icon_color': icon_color}
-        item.setData(QtCore.Qt.UserRole, trace_data)
-
-        # The item is added to the list only after we are done with editing it 
-        # to prevent useless firings of itemChanged signal by the list widget.
-        self.traceListWidget.addItem(item)
 
     def _on_current_trace_changed(self):
         # TODO (2021-09-12): Updates the plot labels and displays the trace save status.
