@@ -24,10 +24,15 @@ QComboBox {
     border-width: 1px;
     border-color: rgb(0, 0, 0);
 }
-QToolButton:checked {
+QToolButton {
 	border-style: solid;
     border-width: 1px;
     border-color: white;
+}
+QToolButton:hover {
+	background-color: rgb(204, 232, 255);
+}
+QToolButton:checked {
 	background-color: rgb(204, 232, 255);
 }
 QComboBox QAbstractItemView {

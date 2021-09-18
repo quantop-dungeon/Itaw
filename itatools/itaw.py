@@ -6,8 +6,9 @@ from PyQt5 import QtCore
 from PyQt5 import QtGui
 
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QListWidgetItem
 from PyQt5.QtWidgets import QMessageBox
 
@@ -23,19 +24,19 @@ UNSAVED_ITEM_COLOR = (130, 130, 130)  # rgb
 SAVED_ITEM_COLOR = (0, 0, 0)  # rgb
 
 
-class ItawWindow(QMainWindow, Ui_Itaw):
+class ItaWidget(QMainWindow, Ui_Itaw):
     """The main application window."""
 
-    def __init__(self, get_trace: Callable, title: str = ''):
+    def __init__(self, get_trace: Callable, title: str = '',
+                 parent: Union[QWidget, None] = None):
         """Initiates a class instance.
 
         Args:
-            get_trace:
-                A function that supplies traces.
-            title:
-                Window title.
+            get_trace: A function that supplies traces.
+            title: Window title.
+            parent: Parent window.
         """
-        super().__init__()
+        super().__init__(parent=parent)
         self.setupUi(self)
 
         self.get_trace = get_trace
@@ -66,12 +67,6 @@ class ItawWindow(QMainWindow, Ui_Itaw):
         # Displays the current directory.
         dir = os.path.abspath('.')
         self.dirLineEdit.setText(dir)
-
-        self.show()
-        self.activateWindow()
-
-        self.canvas.draw()
-        self.canvas.figure.tight_layout()
 
     def _clear_window(self):
         """Removes dummy elements and text from the window."""
@@ -130,7 +125,7 @@ class ItawWindow(QMainWindow, Ui_Itaw):
 
         Args:
             file_name: 
-                A desired file name relative to the directory in the GUI.
+                The desired file name relative to the directory in the GUI.
 
         Returns:
             A path if there is no existing file or if the user has confirmed 
@@ -306,10 +301,15 @@ class ItawWindow(QMainWindow, Ui_Itaw):
         # Plots the new data in the axes.
         lines = self.axes.plot(tr['x'], tr['y'])
 
-        if 'xlabel' in tr:
+        try:
             self.axes.set_xlabel(tr['xlabel'])
-        if 'ylabel' in tr:
+        except (TypeError, KeyError):
+            pass
+
+        try:
             self.axes.set_ylabel(tr['ylabel'])
+        except (TypeError, KeyError):
+            pass
 
         self.canvas.draw()
         self.canvas.figure.tight_layout()
@@ -350,7 +350,7 @@ class ItawWindow(QMainWindow, Ui_Itaw):
             self.dirLineEdit.setText(dir)
 
 
-def itaw(get_trace: Callable, title: str = '') -> Union[ItawWindow, None]:
+def itaw(get_trace: Callable, title: str = '') -> Union[ItaWidget, None]:
     """Creates a widget to interactive acquire traces using get_trace. 
 
     Args:
@@ -386,7 +386,16 @@ def itaw(get_trace: Callable, title: str = '') -> Union[ItawWindow, None]:
     if not app:
         app = QApplication(sys.argv)
 
-    win = ItawWindow(get_trace, title)
+    win = ItaWidget(get_trace, title)
+
+    win.show()
+
+    # Sets the window to be the currently active window
+    # (brings it to the foreground).
+    win.activateWindow() 
+
+    win.canvas.draw()
+    win.canvas.figure.tight_layout()
 
     if is_ipython:
         # The window has already been embedded into the IPython event loop
