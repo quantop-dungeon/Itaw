@@ -189,12 +189,12 @@ class ItaWidget(QMainWindow, Ui_Itaw):
 
         try:
             self.axes.set_xlabel(tr['xlabel'])
-        except (TypeError, KeyError):
+        except (TypeError, LookupError):
             pass
 
         try:
             self.axes.set_ylabel(tr['ylabel'])
-        except (TypeError, KeyError):
+        except (TypeError, LookupError):
             pass
 
         self.canvas.draw()
@@ -343,7 +343,7 @@ class ItaWidget(QMainWindow, Ui_Itaw):
             # Get a new trace from the instrument using the list of arguments.
             tr = eval(f'self.get_trace({argstr})')
         except Exception as e:
-            QMessageBox.warning(self, 'Exception', str(e))
+            QMessageBox.warning(self, 'Exception during getting a new trace', str(e))
             return
 
         # Generates a name for the trace and adds the trace to the list.
@@ -444,10 +444,12 @@ def save_trace(fname: str, tr, fmt: str = '%.18g', delimiter: str = ' ',
     """
 
     with open(fname, 'w') as fd:
-
-        if ('xlabel' in tr) and ('ylabel' in tr):
+        try:
             # Writes the labels.
-            fd.write(comments+tr['xlabel']+delimiter+tr['ylabel']+newline)
+            hdr = comments + tr['xlabel'] + delimiter + tr['ylabel'] + newline
+            fd.write(hdr)
+        except (TypeError, LookupError):
+            pass
 
         line_fmt = fmt + delimiter + fmt + newline
 
