@@ -13,9 +13,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Itaw(object):
     def setupUi(self, Itaw):
         Itaw.setObjectName("Itaw")
-        Itaw.resize(1450, 851)
+        Itaw.resize(1500, 850)
         Itaw.setStyleSheet("QWidget {\n"
-"    font: 10pt \"Calibri Light\";\n"
+"    font: 8pt \"OpenSans\";\n"
 "    background-color: white;\n"
 "}\n"
 "QComboBox {\n"
@@ -29,15 +29,9 @@ class Ui_Itaw(object):
 "    border-color: white;\n"
 "}\n"
 "QToolButton:hover {\n"
-"    border-style: solid;\n"
-"    border-width: 1px;\n"
-"    border-color: white;\n"
 "    background-color: rgb(204, 232, 255);\n"
 "}\n"
 "QToolButton:checked {\n"
-"    border-style: solid;\n"
-"    border-width: 1px;\n"
-"    border-color: white;\n"
 "    background-color: rgb(204, 232, 255);\n"
 "}\n"
 "QComboBox QAbstractItemView {\n"
@@ -74,7 +68,7 @@ class Ui_Itaw(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.openDirButton.sizePolicy().hasHeightForWidth())
         self.openDirButton.setSizePolicy(sizePolicy)
-        self.openDirButton.setMinimumSize(QtCore.QSize(176, 0))
+        self.openDirButton.setMinimumSize(QtCore.QSize(112, 0))
         self.openDirButton.setMaximumSize(QtCore.QSize(100, 16777215))
         self.openDirButton.setObjectName("openDirButton")
         self.gridLayout.addWidget(self.openDirButton, 2, 0, 1, 1)
@@ -83,30 +77,15 @@ class Ui_Itaw(object):
         self.mplVBox = QtWidgets.QVBoxLayout()
         self.mplVBox.setObjectName("mplVBox")
         self.horizontalLayout.addLayout(self.mplVBox)
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.readTraceButton = QtWidgets.QPushButton(self.centralwidget)
-        self.readTraceButton.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.readTraceButton.setObjectName("readTraceButton")
-        self.verticalLayout.addWidget(self.readTraceButton)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.gridLayout_2 = QtWidgets.QGridLayout()
+        self.gridLayout_2.setObjectName("gridLayout_2")
         self.argsLabel = QtWidgets.QLabel(self.centralwidget)
         self.argsLabel.setMinimumSize(QtCore.QSize(0, 0))
         self.argsLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.argsLabel.setObjectName("argsLabel")
-        self.horizontalLayout_2.addWidget(self.argsLabel)
-        self.argsLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.argsLineEdit.setMinimumSize(QtCore.QSize(140, 0))
-        self.argsLineEdit.setMaximumSize(QtCore.QSize(300, 16777215))
-        self.argsLineEdit.setText("")
-        self.argsLineEdit.setPlaceholderText("")
-        self.argsLineEdit.setObjectName("argsLineEdit")
-        self.horizontalLayout_2.addWidget(self.argsLineEdit)
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-        spacerItem = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
-        self.verticalLayout.addItem(spacerItem)
+        self.gridLayout_2.addWidget(self.argsLabel, 1, 0, 1, 1)
         self.traceListWidget = QtWidgets.QListWidget(self.centralwidget)
+        self.traceListWidget.setMaximumSize(QtCore.QSize(200, 16777215))
         self.traceListWidget.setDragEnabled(False)
         self.traceListWidget.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.traceListWidget.setDefaultDropAction(QtCore.Qt.MoveAction)
@@ -126,11 +105,24 @@ class Ui_Itaw(object):
         item.setIcon(icon)
         item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEditable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsUserCheckable|QtCore.Qt.ItemIsEnabled)
         self.traceListWidget.addItem(item)
-        self.verticalLayout.addWidget(self.traceListWidget)
+        self.gridLayout_2.addWidget(self.traceListWidget, 2, 1, 1, 1)
+        self.readTraceButton = QtWidgets.QPushButton(self.centralwidget)
+        self.readTraceButton.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.readTraceButton.setObjectName("readTraceButton")
+        self.gridLayout_2.addWidget(self.readTraceButton, 0, 1, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        self.gridLayout_2.addItem(spacerItem, 3, 1, 1, 1)
+        self.argsLineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.argsLineEdit.setMinimumSize(QtCore.QSize(140, 0))
+        self.argsLineEdit.setMaximumSize(QtCore.QSize(200, 16777215))
+        self.argsLineEdit.setText("")
+        self.argsLineEdit.setPlaceholderText("")
+        self.argsLineEdit.setObjectName("argsLineEdit")
+        self.gridLayout_2.addWidget(self.argsLineEdit, 1, 1, 1, 1)
         self.saveTraceButton = QtWidgets.QPushButton(self.centralwidget)
         self.saveTraceButton.setObjectName("saveTraceButton")
-        self.verticalLayout.addWidget(self.saveTraceButton)
-        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.gridLayout_2.addWidget(self.saveTraceButton, 4, 1, 1, 1)
+        self.horizontalLayout.addLayout(self.gridLayout_2)
         self.horizontalLayout.setStretch(0, 3)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 6)
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -146,7 +138,7 @@ class Ui_Itaw(object):
         self.gridLayout.addWidget(self.dirLineEdit, 2, 4, 1, 1)
         Itaw.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Itaw)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1450, 27))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1500, 19))
         self.menubar.setObjectName("menubar")
         self.actionsMenu = QtWidgets.QMenu(self.menubar)
         self.actionsMenu.setObjectName("actionsMenu")
@@ -170,9 +162,7 @@ class Ui_Itaw(object):
         _translate = QtCore.QCoreApplication.translate
         Itaw.setWindowTitle(_translate("Itaw", "Itaw"))
         self.openDirButton.setText(_translate("Itaw", "Open"))
-        self.readTraceButton.setText(_translate("Itaw", "Read"))
         self.argsLabel.setText(_translate("Itaw", "Args:"))
-        self.argsLineEdit.setToolTip(_translate("Itaw", "<html><head/><body><p>e.g. &quot;ch=1, mem=True&quot;</p></body></html>"))
         self.traceListWidget.setToolTip(_translate("Itaw", "<html><head/><body><pre style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:19px; background-color:#ffffff;\"><span style=\" font-family:\'Consolas,Courier New,monospace\'; font-size:14px; color:#000000;\">Ctrl+s - save selected trace</span></pre><pre style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:19px; background-color:#ffffff;\"><span style=\" font-family:\'Consolas,Courier New,monospace\'; font-size:14px; color:#000000;\">Ctrl+x - toggle visibility</span></pre></body></html>"))
         __sortingEnabled = self.traceListWidget.isSortingEnabled()
         self.traceListWidget.setSortingEnabled(False)
@@ -183,6 +173,8 @@ class Ui_Itaw(object):
         item = self.traceListWidget.item(2)
         item.setText(_translate("Itaw", "3. new trace"))
         self.traceListWidget.setSortingEnabled(__sortingEnabled)
+        self.readTraceButton.setText(_translate("Itaw", "Read"))
+        self.argsLineEdit.setToolTip(_translate("Itaw", "<html><head/><body><p>e.g. &quot;ch=1, mem=True&quot;</p></body></html>"))
         self.saveTraceButton.setText(_translate("Itaw", "Save"))
         self.label.setText(_translate("Itaw", "Directory:"))
         self.actionsMenu.setTitle(_translate("Itaw", "Actions"))

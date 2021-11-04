@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backend_bases import key_press_handler
 
 from .itawui import Ui_Itaw
 
@@ -24,16 +25,17 @@ UNSAVED_ITEM_COLOR = (130, 130, 130)  # rgb
 SAVED_ITEM_COLOR = (0, 0, 0)  # rgb
 
 
-class ItaWidget(QMainWindow, Ui_Itaw):
+class ItaWindow(QMainWindow, Ui_Itaw):
     """The main application window."""
 
-    def __init__(self, get_trace: Callable, title: str = '',
+    def __init__(self, get_trace: Callable, title: str = '', basedir: str = '',
                  parent: Union[QWidget, None] = None):
         """Initiates a class instance.
 
         Args:
             get_trace: A function that supplies traces.
             title: Window title.
+            basedir: The base directory.
             parent: Parent window.
         """
         super().__init__(parent=parent)
@@ -64,9 +66,12 @@ class ItaWidget(QMainWindow, Ui_Itaw):
         tooltip = f'Docsting:\n\n{doc}'
         self.readTraceButton.setToolTip(tooltip)
 
-        # Displays the current directory.
-        dir = os.path.abspath('.')
-        self.dirLineEdit.setText(dir)
+        if not basedir:
+
+            # Gets the name of the current directory.
+            basedir = os.path.abspath('.')
+
+        self.dirLineEdit.setText(basedir)
 
     def _clear_window(self):
         """Removes dummy elements and text from the window."""
@@ -78,7 +83,7 @@ class ItaWidget(QMainWindow, Ui_Itaw):
         style_file = os.path.join(os.path.dirname(__file__), 'itaw.mplstyle')
         plt.style.use(style_file)
 
-        self.canvas = FigureCanvas(Figure(figsize=(10, 6)))
+        self.canvas = FigureCanvas(Figure())
         self.axes = self.canvas.figure.subplots()
         self.toolbar = ItawNavigationToolbar(self.canvas, self,
                                              coordinates=True)
@@ -112,6 +117,10 @@ class ItaWidget(QMainWindow, Ui_Itaw):
         self.traceListWidget.currentItemChanged.connect(
             self._on_current_trace_changed
         )
+
+        # Enables the matplotlib canvas hotkeys.
+        self.canvas.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.canvas.mpl_connect('key_press_event', key_press_handler)
 
     def update_plot(self):
         self.canvas.draw()
@@ -160,6 +169,8 @@ class ItaWidget(QMainWindow, Ui_Itaw):
 
                 # An empty string will be returned in this case.
                 full_name = ''
+        elif not os.path.exists(dir_name):
+            os.makedirs(dir_name)  # Creates the base directory.
 
         return full_name
 
@@ -242,6 +253,8 @@ class ItaWidget(QMainWindow, Ui_Itaw):
 
                 self.canvas.draw()
 
+                event.accept()
+
         elif event.modifiers() == QtCore.Qt.ControlModifier:
 
             if event.key() == QtCore.Qt.Key_S:
@@ -272,7 +285,7 @@ class ItaWidget(QMainWindow, Ui_Itaw):
 
                     item.setIcon(QtGui.QIcon(icon))
 
-        event.accept()
+                    event.accept()
 
     def _on_row_moved(self, src, start_row: int, sr2: int, dst, end_row: int):
         """Called when the entries in traceListWidget are reorders."""
@@ -360,15 +373,17 @@ class ItaWidget(QMainWindow, Ui_Itaw):
     def _on_open_directory(self):
         """Creates a dialog to select the base directory."""
 
-        dir = QFileDialog.getExistingDirectory(self, caption="Base directory")
+        basedir = QFileDialog.getExistingDirectory(self, 
+                                                   caption="Base directory")
 
-        if dir:
-            dir = os.path.abspath(dir)  # Normalizes the path format
-            self.dirLineEdit.setText(dir)
+        if basedir:
+            basedir = os.path.abspath(basedir)  # Normalizes the path format
+            self.dirLineEdit.setText(basedir)
 
 
-def itaw(get_trace: Callable, title: str = '') -> Union[ItaWidget, None]:
-    """Creates a widget to interactive acquire traces using get_trace. 
+def itaw(get_trace: Callable, title: str = '', 
+         basedir: str = '') -> Union[ItaWindow, None]:
+    """Creates a window to interactively acquire traces using get_trace. 
 
     Args:
         get_trace: 
@@ -376,6 +391,9 @@ def itaw(get_trace: Callable, title: str = '') -> Union[ItaWidget, None]:
             numeric arrays that can be accessed as obj['x'] and obj['y'].
         title:
             Window title.
+        basedir:
+            The initial base directory. Can be changed later via 
+            the user interface.
 
     Returns:
         A window instance if called from an IPython console or None if called 
@@ -403,7 +421,7 @@ def itaw(get_trace: Callable, title: str = '') -> Union[ItaWidget, None]:
     if not app:
         app = QApplication(sys.argv)
 
-    win = ItaWidget(get_trace, title)
+    win = ItaWindow(get_trace, title=title, basedir=basedir)
 
     win.show()
 
@@ -426,7 +444,7 @@ def itaw(get_trace: Callable, title: str = '') -> Union[ItaWidget, None]:
 def save_trace(fname: str, tr, fmt: str = '%.18g', delimiter: str = ' ',
                newline: str = '\n', comments: str = '# ') -> bool:
     """Saves the trace data with labels in a file, overwriting the file if 
-    italready  exists.
+    it already  exists.
 
     Note: the default format %g removes trailing veros, which can significantly 
     reduce file size for data with few significant digits. 
